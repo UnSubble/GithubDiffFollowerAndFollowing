@@ -9,6 +9,7 @@ function getJsonData() {
 const data = getJsonData();
 const token = data['user-profile-token'];
 const username = data['username'];
+const blacklistedUsers = data['blacklist'];
 
 const octokit = new Octokit({
     auth: token
@@ -76,9 +77,9 @@ const followingNames = following.map(user => user.login);
 const followersSet = new Set(followersNames);
 const followingSet = new Set(followingNames);
 
-const notFollowUs = followingNames.filter(user => !followersSet.has(user));
-const notFollowThem = followersNames.filter(user => !followingSet.has(user));
+const notFollowUs = followingNames.filter(user => !followersSet.has(user) && !blacklistedUsers.includes(user));
+const notFollowingThem = followersNames.filter(user => !followingSet.has(user) && !blacklistedUsers.includes(user));
 
-console.log(`You are not following ${notFollowThem.length} user(s):` + notFollowThem);
+console.log(`You are not following ${notFollowingThem.length} user(s):` + notFollowingThem);
 console.log();
 console.log(`There are ${notFollowUs.length} user(s) who do not follow you: ` + notFollowUs);
